@@ -1,0 +1,22 @@
+@app.route('/register_event/<int:event_id>', methods=['GET', 'POST'])
+def register_event(event_id):
+
+    if request.method == 'POST':
+        team_name = request.form['team_name']
+        members = request.form['members']   # comma separated names
+
+        user_id = session.get('id')
+
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("""
+            INSERT INTO participants (user_id, event_id, team_name, members)
+            VALUES (?, ?, ?, ?)
+        """, (user_id, event_id, team_name, members))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/dashboard')
+
+    return render_template('register_event.html', event_id=event_id)
