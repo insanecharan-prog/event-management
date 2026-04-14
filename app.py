@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = "mysecretkey123"
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -186,4 +189,4 @@ def participants(event_id):
 
 # ---------------- RUN APP ----------------
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
